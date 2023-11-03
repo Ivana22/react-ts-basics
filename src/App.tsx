@@ -1,30 +1,41 @@
-import { useState } from "react";
 import "./App.css";
-import CourseGoal from "./components/CourseGoal.tsx";
+import CourseGoalList from "./components/CourseGoalList.tsx";
+import Header from "./components/Header.tsx";
+import goalsImg from "./assets/react.svg";
+import { useState } from "react";
+
+export type CourseGoal = {
+  title: string;
+  description: string;
+  id: number;
+};
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [goals, setGoals] = useState<CourseGoal[]>([]);
+
+  function handleAddGoal() {
+    setGoals((prevGoals) => {
+      const newGoal: CourseGoal = {
+        id: Math.random(),
+        title: "Learn Reach and TS",
+        description: "Learn it in depth",
+      };
+      return [...prevGoals, newGoal];
+    });
+  }
+
+  function handleDeleteGoal(id: number) {
+    setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== id));
+  }
 
   return (
-    <>
-      <div>
-        <CourseGoal title="Learn React + TS">
-          <p>Learn it from the ground up!</p>
-        </CourseGoal>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <main>
+      <Header image={{ src: goalsImg, alt: "A list of goals" }}>
+        <h1>Your Course Goals</h1>
+      </Header>
+      <button onClick={handleAddGoal}>Add Goal</button>
+      <CourseGoalList goals={goals} onDeleteGoal={handleDeleteGoal} />
+    </main>
   );
 }
 
